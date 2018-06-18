@@ -66,14 +66,15 @@ def lineseperate(image_list):
 
             line = line + 1
 
-        cv2.imshow('contours', roi)
-        cv2.waitKey(0)
+        #cv2.imshow('contours', roi)
+        #cv2.waitKey(0)
 
     for elements in myDataList:
         name = "page_%d_line_%d.jpg" % (elements.pageNo, elements.lineNo)
         path = 'C:/Users/Malith/PycharmProjects/untitled/output'
         cv2.imwrite(os.path.join(path, name), elements.image)
     print("Seperation completed")
+    os.startfile(path)
 
 def paraseperate(img,page,line):
 
@@ -94,8 +95,8 @@ def paraseperate(img,page,line):
 
     mask = np.zeros(bw.shape, dtype=np.uint8)
     contours = list(reversed(contours))
-    cv2.imshow('roi w', img)
-    cv2.waitKey(0)
+    #cv2.imshow('roi w', img)
+    #cv2.waitKey(0)
     for idx in range(len(contours)):
 
         x, y, w, h = cv2.boundingRect(contours[idx])
@@ -110,17 +111,15 @@ def paraseperate(img,page,line):
             myDataList.append(data)
             line = line + 1
 
-    cv2.imshow('contours3', img)
-    cv2.waitKey(0)
+    #cv2.imshow('contours3', img)
+    #cv2.waitKey(0)
     print('line no pass',line)
     return line
 
 
 
-def main():
-    image_list = (glob.glob("C:/Users/Malith/PycharmProjects/untitled/bulk/*.jpg"))
+def main(folder):
+    image_list = (glob.glob(folder + "/*.jpg"))
+    print(image_list)
     lineseperate(image_list)
 
-
-
-main()
