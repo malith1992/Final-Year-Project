@@ -134,3 +134,7 @@ def main(folder):
     #print(image_list)
     lineseperate(image_list)
 
+
+
+
+

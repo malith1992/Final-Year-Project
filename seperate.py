@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import os
 import glob
+#import skewcorrection
 
 
 class Data :
@@ -16,18 +17,22 @@ class Data :
 
 myDataList = []
 image_list = (glob.glob("C:/Users/Malith/PycharmProjects/untitled/bulk/*.jpg"))
+print(image_list)
 for page,img in enumerate(image_list):
     print (page,img.replace("\\","/"))
     large = cv2.imread(img.replace("\\","/"))
     rgb = large
     small = cv2.cvtColor(rgb, cv2.COLOR_BGR2GRAY)
-
+    #skewImage = skewcorrection.main(small)
+    #cv2.imshow('skewok',skewImage)
+    #cv2.waitKey(0)
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
     grad = cv2.morphologyEx(small, cv2.MORPH_GRADIENT, kernel)
 
     _, bw = cv2.threshold(grad, 0.0, 255.0, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
+    cv2.imshow('small',bw)
+    cv2.waitKey(0)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 1))
     connected = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, kernel)
 
     # using RETR_EXTERNAL instead of RETR_CCOMP
@@ -48,7 +53,7 @@ for page,img in enumerate(image_list):
             myDataList.append(data)
 
 
-    cv2.imshow('contours',rect)
+    cv2.imshow('contours',large)
     cv2.waitKey(0)
     print("Seperation completed")
 

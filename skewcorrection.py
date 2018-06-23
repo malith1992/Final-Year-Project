@@ -10,6 +10,8 @@ def createClahe(img):
     # contrast limiting is applied for avoid noise amplified
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     c_img = clahe.apply(img)
+    cv2.imshow('small',c_img)
+    cv2.waitKey(0)
     return c_img
 
 
@@ -25,13 +27,7 @@ def smoothing(cImg):
 
 
 def convertToBinary(smooth_img):
-    # para-1 = input image
-    # para-2 = pixel value for more than threshold value
-    # para-3 = threshold value is the weighted sum of neighborhood values
-    # para-4 = type of threshold to be used.
-    # para-5 = size of the pixelneighborhood used to calculate the threshold value
-    # para-6 = constant that subtract from mean or weighted mean
-    # binary_img = cv2.adaptiveThreshold(smooth_img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+
     ret, binary_img = cv2.threshold(smooth_img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
     return binary_img
 
@@ -45,9 +41,13 @@ def skewCorrection(binary_img):
     angle = cv2.minAreaRect(coords)[-1]
 
     if angle < -45:
+        print("Angle < -45 = %d" % (angle))
         angle = -(90 + angle)
+
     else:
+        print("Angle else = %d" % (angle))
         angle = -angle
+
 
     # find center x,y coordinate
     (h, w) = binary_img.shape[:2]
@@ -60,38 +60,24 @@ def skewCorrection(binary_img):
     # checking output image match with rotation angle
     cv2.putText(skiw_img, '', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
    # cv2.imshow('rect1', skiw_img)
-    print(type(skiw_img))
-    cv2.waitKey(0)
     return skiw_img
 
 
-def imgResizing(skiw_img):
-    baseheight = 850
-    width, height = skiw_img.shape[:2]
-    ratio = (baseheight / float(height))
-    wsize = int(float(width) * float(ratio))
-    final_img = cv2.resize(skiw_img, (550, 500), interpolation=cv2.INTER_AREA)
-    return final_img
-
-
-
 def main():
-    img = cv2.imread('100-051.jpg', 0)
+    img = cv2.imread('107.jpg', 0)
     c_img = createClahe(img)
-    smooth_img = smoothing(c_img)
-    binary_img = convertToBinary(img)
+    #smooth_img = smoothing(c_img)
+    binary_img = convertToBinary(c_img)
     skiw_img = skewCorrection(binary_img)
-
-    cv2.imshow('skewcorreect', skiw_img)
-    cv2.imshow('original', img)
-    cv2.imwrite('skewcorreect.jpg', skiw_img)
+    #return skiw_img
 
     #line_img_no = lineSegmantation(skiw_img)
 
-    # cv2.imwrite('segImg.jpg',line_img_no)
-
+    cv2.imwrite('skewCorrect.jpg',skiw_img)
+    cv2.imshow('original.jpg', img)
+    cv2.waitKey(0)
 
 main()
 
-cv2.waitKey(0)
+
 cv2.destroyAllWindows()
